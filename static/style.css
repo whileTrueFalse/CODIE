@@ -1,0 +1,309 @@
+:root {
+    --primary-color: #1a1a1a;
+    --secondary-color: #3498db;
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --text-muted: #a0a0a0;
+    --border-color: #333333;
+    --hover-color: #2980b9;
+    --card-background: #1e1e1e;
+    --modal-background: #242424;
+    --accent-color: #3498db;
+    --success-color: #2ecc71;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Minimal Input Styling */
+.input-container {
+    margin-bottom: 1.5rem;
+}
+
+textarea, input, select {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    background-color: var(--card-background);
+    color: var(--text-color);
+}
+
+textarea:focus, input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Button Styling */
+button {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-1px);
+}
+
+button:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+}
+
+/* Code Display */
+.code-container {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+pre {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.explanation-text {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Loading Animations */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+@keyframes wave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.loading-wave {
+    display: flex;
+    gap: 6px;
+}
+
+.loading-wave div {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    animation: wave 1s infinite;
+}
+
+.loading-wave div:nth-child(2) { animation-delay: 0.1s; }
+.loading-wave div:nth-child(3) { animation-delay: 0.2s; }
+.loading-wave div:nth-child(4) { animation-delay: 0.3s; }
+.loading-wave div:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.loading-pulse {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Results Section */
+.result-section {
+    margin-top: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+}
+
+.result-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Copy Button */
+.copy-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: transparent;
+    color: var(--text-color);
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.copy-button:hover {
+    color: var(--accent-color);
+    background-color: transparent;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.tab {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+
+.tab.active {
+    border-bottom-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+/* Dark Mode Toggle */
+.theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: var(--text-color);
+}
+
+/* Home Page Styles */
+.hero-section {
+    padding: 4rem 0;
+    background-color: var(--card-background);
+    border-radius: 16px;
+    margin-bottom: 3rem;
+    border: 1px solid var(--border-color);
+}
+
+.hero-section h1 {
+    color: var(--text-color);
+    font-weight: 700;
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero-section .lead {
+    color: var(--text-muted);
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.feature-card {
+    transition: transform 0.3s ease;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-background);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+}
+
+.feature-card .card-title {
+    color: var(--text-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.feature-card .card-text {
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.creator-section .card {
+    border: 1px solid var(--border-color);
+    background-color: var(--card-background);
+    padding: 2rem;
+}
+
+.creator-section h2 {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.creator-section .lead {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.creator-avatar {
+    border: 4px solid var(--accent-color);
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+}
+
+.creator-avatar:hover {
+    transform: scale(1.05);
+}
+
+.footer {
+    background-color: var(--primary-color);
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    padding: 2rem 0;
+}
+
+.footer a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer a:hover {
+    color: var(--hover-color);
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    button {
+        width: 100%;
+    }
+    
+    .tabs {
+        flex-wrap: wrap;
+    }
+}

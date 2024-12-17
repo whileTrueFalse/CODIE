@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Coding - AI Code Generator IDE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        .code-container {
+            height: calc(100vh - 400px);
+            min-height: 300px;
+        }
+        .CodeMirror {
+            height: 100%;
+        }
+        .chat-container {
+            height: 300px;
+            overflow-y: auto;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+        .chat-message.own {
+            background-color: #e3f2fd;
+            margin-left: 20%;
+        }
+        .chat-message.other {
+            background-color: #f5f5f5;
+            margin-right: 20%;
+        }
+        .participants-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .typing-indicator {
+            font-style: italic;
+            color: #666;
+            height: 20px;
+        }
+        .loading-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-wave {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .loading-wave div {
+            width: 20px;
+            height: 100%;
+            background-color: #007bff;
+            animation: wave 1s infinite;
+        }
+        @keyframes wave {
+            0% {
+                transform: scaleY(0.5);
+            }
+            50% {
+                transform: scaleY(1);
+            }
+            100% {
+                transform: scaleY(0.5);
+            }
+        }
+        .loading-pulse {
+            width: 50px;
+            height: 50px;
+            background-color: #007bff;
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(0.5);
+            }
+            50% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(0.5);
+            }
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand">Collaborative Coding Session</span>
+            <div class="d-flex align-items-center">
+                <div class="join-section me-3">
+                    <input type="text" id="join-session-id" class="form-control form-control-sm" placeholder="Enter Session ID">
+                    <button id="join-session-btn" class="btn btn-light btn-sm">Join Session</button>
+                </div>
+                <span class="text-light me-3">Current Session ID: <strong><span id="current-session-id">{{ session_id }}</span></strong></span>
+                <button id="copy-session-id" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-clipboard"></i> Copy ID
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="loading-container" id="loadingContainer" style="display: none;">
+        <div class="loading-wave">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div class="loading-container" id="pulseLoader" style="display: none;">
+        <div class="loading-pulse"></div>
+    </div>
+
+    <div class="container-fluid px-4">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <!-- Code Editor -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <h5 class="card-title mb-0 me-3">Collaborative Editor</h5>
+                            <select id="language-select" class="form-select form-select-sm" style="width: 150px;">
+                                <option value="python">Python</option>
+                                <option value="javascript">JavaScript</option>
+                                <option value="java">Java</option>
+                                <option value="cpp">C++</option>
+                                <option value="typescript">TypeScript</option>
+                                <option value="go">Go</option>
+                                <option value="rust">Rust</option>
+                                <option value="php">PHP</option>
+                                <option value="csharp">C#</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button id="generate-button" class="btn btn-primary btn-sm me-2">
+                                <i class="bi bi-code-slash"></i> Generate Code
+                            </button>
+                            <button id="copy-button" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-clipboard"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-container">
+                            <textarea id="code-editor">{{ initial_code }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Section -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Chat</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="chat-messages" class="chat-container mb-3"></div>
+                        <div id="typing-indicator" class="typing-indicator mb-2"></div>
+                        <div class="input-group">
+                            <input type="text" id="message-input" class="form-control" placeholder="Type a message...">
+                            <button id="send-message" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <!-- Participants -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Participants</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="participants-list" class="participants-list"></div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button id="save-snippet" class="btn btn-outline-primary">
+                                <i class="bi bi-bookmark-plus"></i> Save as Snippet
+                            </button>
+                            <button id="end-session" class="btn btn-outline-danger">
+                                <i class="bi bi-box-arrow-right"></i> End Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/php/php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/go/go.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/rust/rust.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='collaborate.js') }}"></script>
+</body>
+</html>

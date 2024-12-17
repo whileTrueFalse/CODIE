@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODIE - AI-Powered Code Generation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand">CODIE</span>
+            <div class="d-flex">
+                <a href="/editor" class="btn btn-outline ms-2">
+                    <i class="bi bi-code-square"></i> Open Editor
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero-section text-center py-5">
+            <h1 class="display-4 mb-4">Welcome to CODIE</h1>
+            <p class="lead mb-4">Your AI-Powered Code Generation Assistant</p>
+            <a href="/editor" class="btn btn-primary btn-lg">
+                <i class="bi bi-code-square"></i> Start Coding
+            </a>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="feature-card card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-lightning-charge feature-icon"></i>
+                        <h3 class="card-title mt-3">Fast & Efficient</h3>
+                        <p class="card-text">Generate high-quality code instantly with our advanced AI model</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-people feature-icon"></i>
+                        <h3 class="card-title mt-3">Collaborative</h3>
+                        <p class="card-text">Share and collaborate with other developers in real-time</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-clock-history feature-icon"></i>
+                        <h3 class="card-title mt-3">History Tracking</h3>
+                        <p class="card-text">Keep track of all your generated code with our history feature</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="creator-section mt-5 py-5">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-center">
+                            <img src="https://avatars.githubusercontent.com/whileTrueFalse" alt="Creator" class="creator-avatar rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                        </div>
+                        <div class="col-md-8">
+                            <h2 class="mb-4">About the Creator</h2>
+                            <p class="lead">Hi! I'm a passionate developer who loves creating tools that make coding easier and more efficient. CODIE is my attempt to bring the power of AI to every developer's workflow.</p>
+                            <div class="mt-4">
+                                <a href="https://github.com/whileTrueFalse" target="_blank" class="btn btn-outline">
+                                    <i class="bi bi-github"></i> Follow on GitHub
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-5 py-4">
+        <div class="container text-center">
+            <p>© 2024 CODIE. Created with ❤️ by <a href="https://github.com/whileTrueFalse" target="_blank">whileTrueFalse</a></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

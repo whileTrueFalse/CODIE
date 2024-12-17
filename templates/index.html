@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Generator IDE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <style>
+        body {
+            background-color: #333;
+            color: #fff;
+        }
+        .navbar {
+            background-color: #444;
+        }
+        .navbar-brand {
+            color: #fff;
+        }
+        .btn-outline {
+            color: #fff;
+            border-color: #fff;
+        }
+        .btn-outline:hover {
+            background-color: #555;
+            border-color: #555;
+        }
+        .card {
+            background-color: #444;
+            border-color: #555;
+        }
+        .card-body {
+            color: #fff;
+        }
+        .form-control {
+            background-color: #555;
+            color: #fff;
+            border-color: #555;
+        }
+        .form-select {
+            background-color: #555;
+            color: #fff;
+            border-color: #555;
+        }
+        .explanation-text {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg mb-4">
+        <div class="container-fluid">
+            <a href="/" class="navbar-brand">CODIE</a>
+            <div class="d-flex">
+                <button class="btn btn-outline" onclick="loadHistory()">
+                    <i class="bi bi-clock-history"></i> History
+                </button>
+                <a href="/collaborate" class="btn btn-outline ms-2">
+                    <i class="bi bi-people"></i> Collaborate
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <!-- Left Panel -->
+            <div class="col-md-6">
+                <!-- Prompt Input -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="input-container">
+                            <textarea id="promptInput" class="form-control" rows="4" 
+                                placeholder="Describe the code you want to generate..."></textarea>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <select id="languageSelect" class="form-select" style="width: auto;">
+                                <option value="python">Python</option>
+                                <option value="javascript">JavaScript</option>
+                                <option value="java">Java</option>
+                                <option value="cpp">C++</option>
+                                <option value="csharp">C#</option>
+                                <option value="php">PHP</option>
+                                <option value="ruby">Ruby</option>
+                                <option value="go">Go</option>
+                                <option value="rust">Rust</option>
+                            </select>
+                            <div>
+                                <button onclick="generateCode()" class="btn btn-primary">Generate Code</button>
+                                <button onclick="shareCode()" class="btn btn-outline ms-2">
+                                    <i class="bi bi-share"></i> Share
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generated Code -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0">Generated Code</h5>
+                            <button onclick="copyToClipboard()" class="btn btn-outline">
+                                <i class="bi bi-clipboard"></i> Copy
+                            </button>
+                        </div>
+                        <div class="code-container">
+                            <textarea id="generatedCode"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="col-md-6">
+                <!-- Code Explanation -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Code Explanation</h5>
+                        <div id="code-explanation" class="explanation-text"></div>
+                    </div>
+                </div>
+
+                <!-- Future Steps -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Future Steps</h5>
+                        <div id="future-prediction" class="explanation-text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Generation History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="historyContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal fade" id="shareModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Share Code</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="share-link" class="form-label">Share Link</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="share-link" readonly>
+                            <button class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('share-link').value)">
+                                <i class="bi bi-clipboard"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Animation -->
+    <div id="loadingContainer" class="loading-container" style="display: none;">
+        <div class="loading-wave"></div>
+    </div>
+    <div id="pulseLoader" class="pulse-loader" style="display: none;">
+        <div class="pulse"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/php/php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/ruby/ruby.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/go/go.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/rust/rust.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
