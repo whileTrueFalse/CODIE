@@ -183,6 +183,16 @@ def generate_code_with_ai(prompt, language):
         logger.error(f"Error generating code with AI: {str(e)}")
         raise
 
+import pusher
+
+pusher_client = pusher.Pusher(
+    app_id=os.getenv('PUSHER_APP_ID'),
+    key=os.getenv('PUSHER_KEY'),
+    secret=os.getenv('PUSHER_SECRET'),
+    cluster=os.getenv('PUSHER_CLUSTER'),
+    ssl=True
+)
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'your-secret-key')
 socketio = SocketIO(app)
@@ -331,6 +341,20 @@ def view_shared_code(share_id):
         logger.error(f"Error viewing shared code: {str(e)}")
         return render_template('error.html', message='Error viewing shared code'), 500
 
+@app.route('/collaborate/<room_id>', methods=['POST'])
+def collaborate(room_id):
+    data = request.json
+    pusher_client.trigger(f'room-{room_id}', 'code-update', {
+        'code': data.get('code'),
+        'language': data.get('language'),
+        'cursor': data.get('cursor')
+    })
+    return jsonify({'status': 'success'})
+
+@app.route('/collaborate/join/<room_id>')
+def join_room(room_id):
+    return render_template('collaborate.html', room_id=room_id)
+
 @app.route('/collaborate', methods=['GET', 'POST'])
 def collaborate():
     if request.method == 'POST':
@@ -346,6 +370,13 @@ def collaborate():
 @app.route('/collaborate/<session_id>')
 def join_collaborate(session_id):
     return render_template('collaborate.html', session_id=session_id)
+
+@app.route('/pusher-config')
+def pusher_config():
+    return jsonify({
+        'key': os.getenv('PUSHER_KEY'),
+        'cluster': os.getenv('PUSHER_CLUSTER')
+    })
 
 @socketio.on('join_session')
 def handle_join_session(data):

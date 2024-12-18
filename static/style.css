@@ -21,9 +21,16 @@ body {
 }
 
 .container {
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 1rem;
+}
+
+@media (min-width: 768px) {
+    .container {
+        padding: 2rem;
+    }
 }
 
 /* Minimal Input Styling */
@@ -33,13 +40,21 @@ body {
 
 textarea, input, select {
     width: 100%;
-    padding: 1rem;
+    padding: 0.8rem;
     border: 2px solid var(--border-color);
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 0.95rem;
     transition: border-color 0.3s ease;
     background-color: var(--card-background);
     color: var(--text-color);
+    min-height: 44px; /* Touch-friendly size */
+}
+
+@media (min-width: 768px) {
+    textarea, input, select {
+        padding: 1rem;
+        font-size: 1rem;
+    }
 }
 
 textarea:focus, input:focus, select:focus {
@@ -53,11 +68,20 @@ button {
     background-color: var(--accent-color);
     color: var(--text-color);
     border: none;
-    padding: 0.8rem 1.5rem;
+    padding: 0.6rem 1.2rem;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.95rem;
     transition: all 0.3s ease;
+    width: auto;
+    min-height: 44px; /* Touch-friendly size */
+}
+
+@media (min-width: 768px) {
+    button {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
 }
 
 button:hover {
@@ -75,9 +99,17 @@ button:disabled {
     background-color: var(--card-background);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 1.5rem;
-    margin: 1.5rem 0;
+    padding: 1rem;
+    margin: 1rem 0;
     position: relative;
+    overflow-x: auto;
+}
+
+@media (min-width: 768px) {
+    .code-container {
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
 }
 
 pre {
@@ -209,30 +241,51 @@ pre {
 .hero-section h1 {
     color: var(--text-color);
     font-weight: 700;
-    font-size: 3.5rem;
+    font-size: 2rem;
+    line-height: 1.2;
     margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .hero-section h1 {
+        font-size: 3.5rem;
+    }
 }
 
 .hero-section .lead {
     color: var(--text-muted);
-    font-size: 1.25rem;
+    font-size: 1.1rem;
+    line-height: 1.5;
     margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+    .hero-section .lead {
+        font-size: 1.25rem;
+    }
 }
 
 .feature-card {
     transition: transform 0.3s ease;
     border: 1px solid var(--border-color);
     background-color: var(--card-background);
+    margin-bottom: 1rem;
+    height: auto !important;
+}
+
+.feature-icon {
+    font-size: 2rem;
+}
+
+@media (min-width: 768px) {
+    .feature-icon {
+        font-size: 2.5rem;
+    }
 }
 
 .feature-card:hover {
     transform: translateY(-5px);
     border-color: var(--accent-color);
-}
-
-.feature-icon {
-    font-size: 2.5rem;
-    color: var(--accent-color);
 }
 
 .feature-card .card-title {
@@ -251,7 +304,7 @@ pre {
 .creator-section .card {
     border: 1px solid var(--border-color);
     background-color: var(--card-background);
-    padding: 2rem;
+    padding: 1rem;
 }
 
 .creator-section h2 {
@@ -269,6 +322,20 @@ pre {
     border: 4px solid var(--accent-color);
     transition: transform 0.3s ease;
     box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+    width: 120px !important;
+    height: 120px !important;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .creator-section .card {
+        padding: 2rem;
+    }
+    
+    .creator-avatar {
+        width: 150px !important;
+        height: 150px !important;
+    }
 }
 
 .creator-avatar:hover {
@@ -293,6 +360,35 @@ pre {
     text-decoration: underline;
 }
 
+/* GitHub Link Styling */
+a[href*="github.com"] {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    position: relative;
+}
+
+a[href*="github.com"]:hover {
+    color: var(--hover-color);
+    text-decoration: none;
+}
+
+a[href*="github.com"] .bi-github {
+    margin-right: 0.5rem;
+    vertical-align: -0.125em;
+}
+
+/* Make footer GitHub link match the theme */
+.footer a[href*="github.com"] {
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.footer a[href*="github.com"]:hover {
+    color: var(--hover-color);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
@@ -305,5 +401,47 @@ pre {
     
     .tabs {
         flex-wrap: wrap;
+    }
+}
+
+.row {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+
+[class*="col-"] {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .row {
+        margin-left: -1rem;
+        margin-right: -1rem;
+    }
+    
+    [class*="col-"] {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+.mt-5 {
+    margin-top: 2rem !important;
+}
+
+.py-5 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+}
+
+@media (min-width: 768px) {
+    .mt-5 {
+        margin-top: 3rem !important;
+    }
+    
+    .py-5 {
+        padding-top: 3rem !important;
+        padding-bottom: 3rem !important;
     }
 }

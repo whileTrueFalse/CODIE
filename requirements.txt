@@ -16,3 +16,4 @@ shortuuid==1.0.11
 eventlet==0.33.3
 flask-sse==1.0.0
 redis==5.0.1
+pusher==3.3.2
